@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивный запрос к ChatGPT</title>
+</head>
+<body>
+    <div><label for="textInput">Введите текст:</label><textarea id="textInput" rows="4" cols="50"></textarea></div>
+    <div><label for="fileInput">Прикрепите файл:</label><input type="file" id="fileInput"></div>
+    <div><label for="promptInput">Введите промпт:</label><select id="promptInput"><option value="Пример 1">Пример 1</option><option value="Пример 2">Пример 2</option><option value="Пример 3">Пример 3</option></select></div>
+    <div><button id="processButton">Обработать</button></div>
+    <div><label for="responseOutput">Ответ:</label><textarea id="responseOutput" rows="4" cols="50" readonly></textarea></div>
+
+    <script>
+        document.getElementById('processButton').addEventListener('click', async () => {
+            const text = document.getElementById('textInput').value;
+            const file = document.getElementById('fileInput').files[0];
+            const prompt = document.getElementById('promptInput').value;
+            try {
+                const response = await fetch('https://your-proxy-server.com/chatgpt', {
+                    method: 'POST',
+                    body: new FormData(Object.assign(new FormData(), {
+                        'text': text,
+                        'file': file,
+                        'prompt': prompt
+                    }))
+                });
+                const data = await response.json();
+                document.getElementById('responseOutput').value = data.answer || 'Ошибка ответа';
+            } catch (error) {
+                console.error("Ошибка:", error);
+                document.getElementById('responseOutput').value = "Ошибка при получении ответа.";
+            }
+        });
+    </script>
+</body>
+</html>
